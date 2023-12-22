@@ -9,6 +9,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "start": "npm build && node start build/index.js",
+    "start:api:dev": "ts-node-dev --transpile-only ./src/index.ts",
     "start:consumer:product:create": "ts-node-dev --transpile-only src/app/consumers/index.ts consume product_create_update",
     "lint": "eslint --ext .js,.ts",
     "start:consumer": "pm2 start -f build/app/consumers/index.js -- consume product_create_update"
