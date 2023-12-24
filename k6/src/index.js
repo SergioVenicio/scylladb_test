@@ -1,19 +1,22 @@
-import http from 'k6/http';
-import { sleep } from 'k6';
+import http from 'k6/http'
+import { sleep } from 'k6'
 import { generateSubscriber } from './fake-data'
 export const options = {
-  vus: 30,
-  duration: '60s',
-};
+  vus: 100,
+  duration: '240s'
+}
 const params = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
+  headers: {
+    'Content-Type': 'application/json'
+  }
+}
 
 export default function () {
   console.log('resquesting....')
-  http.post('http://localhost:3000/', JSON.stringify(generateSubscriber()), params);
-  sleep(0.5);
+  const fakeData = generateSubscriber()
+  http.post('http://localhost:3000/', JSON.stringify(fakeData), params)
+  http.put('http://localhost:3000/', JSON.stringify(fakeData), params)
+  http.get('http://localhost:3000', JSON.stringify(fakeData), params)
+  http.get(`http://localhost:3000/${fakeData.sku}`, JSON.stringify(fakeData), params)
+  sleep(0.1)
 }

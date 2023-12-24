@@ -29,25 +29,33 @@ export default class ProductReporitory implements Repository {
 
   async get (sku: string): Promise<Product | null> {
     const data = await this.scylla.execute(
-      `SELECT sku, description, price, stock FROM products WHERE sku = '${sku}'`
+      'SELECT sku, description, price, stock FROM products WHERE sku = ?',
+      [sku],
+      {
+        prepare: true
+      }
     )
     return data.rows.length > 0
       ? {
-          sku: data.rows[0].sku,
-          description: data.rows[0].description,
-          price: data.rows[0].price,
-          stock: data.rows[0].stock
+          sku: data.rows[0]?.sku,
+          description: data.rows[0]?.description,
+          price: data.rows[0]?.price,
+          stock: data.rows[0]?.stock
         }
       : null
   }
 
   async list (params: ListParams): Promise<Product[]> {
     let { limit } = params
-    if (limit <= 0 || limit > 100) {
+    if (limit <= 0) {
       limit = 100
     }
     const data = await this.scylla.execute(
-      `SELECT sku, description, price, stock FROM products LIMIT ${limit}`
+      'SELECT sku, description, price, stock FROM products LIMIT ?',
+      [limit],
+      {
+        prepare: true
+      }
     )
     return data.rows.map(row => ({
       sku: row.sku,

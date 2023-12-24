@@ -14,6 +14,19 @@ services:
     networks:
       - web
       - monitoring
+  grpc:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.grpc.dev
+    ports:
+      - 50051:50051
+    env_file:
+      - .env.docker
+    expose:
+      - 3000
+    networks:
+      - web
+      - monitoring
   product_create_update:
     build:
       context: .
